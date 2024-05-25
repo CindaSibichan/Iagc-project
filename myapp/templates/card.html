@@ -1,0 +1,137 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{%  block content  %}
+
+<div class="rightcard w-[35vw] mt-6  flex justify-end text-center">
+    <div class="inputdiv flex flex-col justify-center items-center text-center fixed gap-1 border-2 border-[#059D91] rounded-[4vw] w-full sm:w-[25vw] h-[76vh]">
+        
+        <div class="savediv w-full flex justify-end rounded-[4vw]">
+        <button type="submit"  id="save-button"  class=" bg-[#059D91] px-5  text-white rounded-full mr-6 hidden" >Save</button>
+    </div>
+        <div class="imagediv w-[8vw] h-[8vw] flex justify-center items-center rounded-full  border-2 border-[#059D91]">
+            <img id="profile-image" src="{% static 'images/blank_profile copy.png' %}" alt="" class="w-[65%]">
+        </div>
+        <h2 id="profile-name" name="name" class="text-[#059D91] font-bold text-2xl"></h2>
+  
+        <form  id="edit-form" method="post" action="{% url 'edit_Person' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+       <!-- hidden fields -->
+            <input type="hidden" id="person-id" name="person_id" value="">
+            <input type="hidden" id="name" name="name" value="">
+            <input type="hidden" id="designation" name="designation" value="">
+
+           
+            
+       
+        <div class="flex flex-col w-3/4">
+            <label for="ID" class="text-[#059D91] font-bold text-left">ID:</label>
+            <input type="text" id="id" name="unique_id" class="border bg-gray-300 h-7 px-4 w-[19vw] rounded-full focus:outline-none" readonly>
+        </div>
+        <div class="flex flex-col w-3/4">
+            <label for="Valid till" class="text-[#059D91] font-bold text-left">Valid Till:</label>
+            <input type="text" id="validity-date" name="validity_date" class="border bg-gray-300 px-4 w-[19vw] h-7 rounded-full focus:outline-none" readonly>
+        </div>
+        <div class="flex flex-col w-3/4">
+            <label for="Phone" class="text-[#059D91] text-left font-bold">Phone:</label>
+            <input type="text" id="phone"  name="phone" class="border bg-gray-300 px-4 w-[19vw] h-7 rounded-full focus:outline-none" readonly>
+        </div>
+        <div class="flex flex-col w-3/4">
+            <label for="District" class="text-[#059D91] text-left font-bold">District:</label>
+            <input type="text" id="district" name="district" class="border bg-gray-300 px-4 w-[19vw] h-7 rounded-full focus:outline-none" readonly>
+        </div>
+        <div class="flex flex-col w-3/4">
+            <label for="Chapter" class="text-[#059D91] text-left font-bold">Chapter:</label>
+            <input type="text" id="chapter" name="chapter" class="border bg-gray-300 px-4 w-[19vw] h-7 rounded-full focus:outline-none" readonly>
+        </div>
+       
+      
+
+   
+        <div class="smallsection w-full h-9 flex justify-between items-center gap-5 px-4 bg-[#059D91] rounded-lg mt-4">
+            <button type="button"  id="edit-button" class="edit-button" data-id="record_id">
+                <img src="{% static 'images/Edit.svg' %}" alt="" class="w-[75%]"></button>
+            <button type="button" id="open-renew-button"><img src="{% static 'images/images (11) 1.svg' %}" alt="" class="w-[75%]"></button>
+            <button type="button" id="pdf-button"><img src="{% static 'images/PDF.svg' %}" alt="" class="w-[75%]"></button>
+            <button type="button"  class="delete-button" data-id="{{ person.id }}"><img src="{% static 'images/Delete.svg' %}" alt="" class="w-[75%]"></button>
+        </div>
+          </form>
+    
+    </div>
+</div>
+
+
+
+
+<!-- modal -->
+<div id="modal_sec" class="hidden fixed inset-0 flex justify-center items-center z-50 bg-gray-900 bg-opacity-50 ">
+    <div class="bg-white  p-8 w-[80vw] h-[85vh]">
+        <div class="flex justify-end">
+            <button id="closeBtn" class="focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                            </button>
+                        </div>
+                        <div class="navdiv w-full h-[10vh] ">
+                            <img src="{% static  'images/RUU small.svg' %}" alt="" >
+                            <div class="w-full h-[2px] bg-[#059D91]"></div>
+                        </div>
+                        <div class="w-full flex ">
+                        <div class="w-[30vw] h-[45vh] flex justify-center items-center ">
+                            <div class="imagediv w-[9vw] h-[9vw] flex justify-center items-center rounded-full  bg-gray-200 border-2 border-[#059D91] overflow-hidden">
+                
+                                <img id="profile_image" src="{%  static 'images/blank_profile copy.png' %}" alt="" class="w-[65%]">
+                        
+                        </div>
+                        <h2></h2>
+
+                        <h2 class="text-[#059D91]">Status</h2>
+                </div>
+
+                <div class="sidediv w-[50vw]">
+                    <div class="child2 flex flex-col w-[50vw]  items-end  mb-4 ">
+                        <div class="flex flex-col  w-3/4">
+                            <label  class="text-[#059D91] text-left font-bold">ID:</label>
+                            <p class="mt-2">{{ form.unique_id }}</p>
+                        </div>
+                        <div class="flex flex-col w-3/4">
+                            <label  class="text-[#059D91] text-left font-bold">Valid Till:</label>
+                            <p class="mt-2">{{ form.validity_date }}</p>
+                             
+                        </div>
+                        <div class="flex flex-col w-3/4">
+                            <label  class="text-[#059D91] text-left font-bold">Phone:</label>
+                            <p class="mt-2">{{ form.phone }}</p>
+                           
+                        </div>
+                        <div class="flex flex-col w-3/4">
+                            <label  class="text-[#059D91] text-left font-bold">District:</label>
+                            <p class="mt-2">{{ form.district }}</p>
+                           
+                        </div>
+                        <div class="flex flex-col w-3/4">
+                            <label  class="text-[#059D91] text-left font-bold">Chapter:</label>
+                            <p class="mt-2">{{ form.chapter }}</p>
+                           
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+
+       
+        
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'js/edit.js' %}"></script>
+<script src="{% static 'js/renew.js' %}"></script>
+<script src="{% static 'js/update.js' %}"></script>
+
+{% endblock %}

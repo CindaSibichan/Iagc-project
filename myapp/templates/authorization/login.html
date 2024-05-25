@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>IAGC</title>
+</head>
+<body>
+
+    <div class="main w-full h-screen flex justify-between">
+
+        <div class="leftdiv w-[55vw] h-screen bg-[#059D91] rounded-r-[8vw] flex justify-center items-center">
+           <div class="formdiv flex flex-col sm:flex-row justify-center justify-evenly items-center sm:h-[60vh]">
+            <form action="{% url 'login_page'  %}" method="post" id="loginForm" enctype="multipart/form-data">
+                <h1 class="text-white text-4xl font-bold text-center mb-4">LOG IN</h1>
+                {% csrf_token %}
+                <div class="userpassdiv flex flex-col gap-5">
+                <div class>
+                
+                    <p class="mt-2">{{form.username }}</p>
+                </div>
+                <div class>
+               
+                    <p class="mt-2">{{form.password }}</p>
+                </div>
+                <div class="mt-4">
+                    <button
+                    class="bg-[#FFCA3E]  px-6 py-1 text-black  w-full rounded-full">Login</button></div>
+                    <div><p id="error-message" class="text-black font-bold"></p></div>
+
+                </div>
+            </div>
+            </form>
+
+        </div> 
+        <div class="picdiv w-[45vw] h-screen  flex justify-center items-center">
+            <img src="{% static 'images/RUU 1.svg' %}" alt="">
+
+        </div>
+
+
+        </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>

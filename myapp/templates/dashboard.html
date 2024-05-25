@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>IAGC</title>
+</head>
+<body>
+
+    <div class="maindiv w-full h-screen">
+
+        <div class="navbar w-full h-[10vh]  flex  items-center gap-5 px-10 ">
+            <img src="{% static  'images/RUU small.svg' %}" alt="" >
+            <form action="{% url 'search' %}" method="get" id="search-form">
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Search..." name="query" class="px-4 py-1 rounded-full border-2 border-[#059D91] focus:outline-none focus:border-[#059D91] pl-10">
+                <div id="search-icon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <!-- Search Icon SVG -->
+                  <button> <a href=""> <img src="{% static 'images/search.svg' %}" alt="" ></a></button>
+                </div>
+              </div>
+            </form>
+            <ul id="suggestions"></ul>
+            
+            
+                <button type="submit" id="filterButton"><img src="{% static 'images/filter.svg' %}" alt="" class="w-[9vw]"></button>
+            
+             
+             <div class="buttondiv">
+                <button id="openModalBtn" class="open-modal-button  flex items-center justify-center gap-5 bg-[#059D91] px-6 py-1 text-white rounded-full ">
+                    <span>Add</span>
+                    
+                        <img src="{% static 'images/add.svg' %}" alt="">
+                    
+                </button>
+            </div>
+            <!-- Modal -->
+            <form  id="person-form" class="text-black h-full w-full sm:w-[60vw] flex flex-col  items-center py-5 gap-8" action="{% url 'dashboard' %}"   method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+              <div id="modal" class="fixed inset-0 flex justify-center items-center z-50 bg-gray-900 bg-opacity-50 hidden">
+                 <div class="bg-white rounded-[5vw] p-8 w-[70vw] h-[86vh]">
+                     <div class="flex justify-end">
+                        <button id="closeModalBtn" class="focus:outline-none">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="w-full flex justify-center pb-6">
+                                        <div class="imagediv w-[9vw] h-[9vw] flex justify-center items-center rounded-full  bg-gray-200 border-2 border-[#059D91] overflow-hidden">
+                            
+                                            <img id="profile_image" src="{%  static 'images/blank_profile copy.png' %}" alt="" class="w-[65%]">
+                                    
+                                    </div>
+                            </div>
+                            <div class="upload w-full flex justify-center items-center">
+                                <label for="id_image" class="flex items-center justify-center gap-2 bg-white border border-[#059D91] px-6 py-1 text-[#059D91] rounded-full cursor-pointer">
+                                    <span>Upload image</span>
+                                    <img src="{% static 'images/Upload.svg' %}" alt="">
+                                    <input type="file" id="id_image" name="image" class="hidden" accept="image/*" onchange="displayImagePreview(this)" {% if not user.is_authenticated %} required {% endif %}>
+                                </label>
+                            </div>
+                            
+                                    <div class="inputdiv  flex flex-row justify-evenly items-center gap-5"> 
+                                       
+                                    <div class="child1 flex flex-col w-[50vw] items-start px-10 ">
+                                    <div class="flex flex-col w-3/4">
+                                        <label class="text-[#059D91] font-bold text-left">Name:</label>
+                                        <p class="mt-2">{{ form.name }}</p>
+                                    </div>
+                                    <div class="flex flex-col w-3/4">
+                                        <label  class="text-[#059D91] font-bold text-left">Designation:</label>
+                                        <p class="mt-2">{{ form.designation }}</p>
+                                        
+                                    </div> 
+                                    <div class="flex flex-col w-3/4">
+                                        <label class="text-[#059D91] text-left font-bold">Phone:</label> 
+                                        <p class="mt-2">{{ form.phone }}</p>
+                                    </div>
+                                    <div class="flex flex-col w-3/4">
+                                        <label  class="text-[#059D91] text-left font-bold">Chapter:</label>
+                                        <p class="mt-2">{{ form.chapter }}</p>
+                                    </div>
+                                
+                                </div>
+                                <div class="child2 flex flex-col w-[50vw]  items-end  mb-4 ">
+                                    <div class="flex flex-col  w-3/4">
+                                        <label  class="text-[#059D91] text-left font-bold">ID:</label>
+                                        <p  id="unique_id" class="mt-2">{{ form.unique_id }}</p>
+                                    </div>
+                                    <div class="flex flex-col w-3/4">
+                                        <label  class="text-[#059D91] text-left font-bold">Registration Date:</label>
+                                        <p class="mt-2">{{ form.validity_date }}</p>
+                                         
+                                    </div>
+                                    <div class="flex flex-col w-3/4">
+                                        <label  class="text-[#059D91] text-left font-bold">District:</label>
+                                        <p class="mt-2">{{ form.district }}</p>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" id="buttonSave" class="items-center justify-center  bg-[#059D91] px-6 py-1 text-white rounded-full ">Save</button>
+                            </div>   
+                        </div>
+                    </div>
+            </form>
+          <div class="logoutdiv w-full flex justify-end">
+            <a href="{% url 'logout' %}"><button class="border-2 border-[#059D91] flex gap-2 rounded-full bg-white text-[#059D91] px-4 py-1">Log Out <span><img src="{% static 'images/Logout.svg' %}" alt=""></span> </button></a>
+
+        </div>
+
+
+        </div>
+        <div class="w-full h-[2px] bg-[#059D91]"></div>
+        <div class="seconddiv w-full h-screen flex px-10 ">
+
+        <div class="tablediv w-[75vw]  mt-6  ">
+    
+                <div class="table_wrapper border border-[#059D91] rounded-3xl overflow-hidden w-full sm:w-full ">
+                {% if persons %}
+                <table class="w-full">
+                    <thead class="w-full rounded-tl-3xl bg-[#059D91] rounded-tr-3xl">
+                        <tr >
+                            <th class="name-column roboto-light py-2 text-white">Name</th>
+                            <th class="designation-column roboto-light py-2 text-white">Designation</th>
+                            <th class="validity-date-column roboto-light py-2 text-white">ID Validity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for person in persons %}
+                        <tr record_id="person-{{ person.id }}" class="person-row" 
+                            data-id="{{ person.unique_id }}"
+                            data-name="{{ person.name }}"
+                            data-designation="{{ person.designation }}"
+                            data-validity-date="{{ person.validity_date }}"
+                            data-phone="{{ person.phone }}"
+                            data-district="{{ person.district }}"
+                            data-chapter="{{ person.chapter }}"
+                            data-image-src="/static/images/{{ person.image }}">
+                            <td class="name-column border px-4 py-2 text-center">{{ person.name }}</td>
+                            <td class="designation-column border px-4 py-2 text-center">{{ person.designation }}</td>
+                            {% if person.is_valid %}
+                            <td class="validity-date-column border px-4 py-2 text-center">{{ person.validity_date }}</td>
+                            {% else %}
+                            <td class="border px-4 py-2 text-center text-red-600">Expired</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        
+                    </tbody>
+                    
+                </table>
+               
+                
+                {% else %}
+                <p>No persons available.</p>
+                {% endif %}
+            </div>
+            <div class="flex justify-center m-5">
+                <div class="flex flex-wrap justify-center">
+                    {% if persons.has_other_pages %}
+                    <ul class="flex list-none border border-gray-300 rounded overflow-hidden">
+                        {% if persons.has_previous %}  
+                        <li class="mr-1">
+                            <a href="?page={{ persons.previous_page_number }}" class="block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l">&laquo;</a>
+                        </li>
+                        {% else %}
+                        <li class="mr-1">
+                            <a class="block bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-l" href="?page=1">&laquo;</a>
+                        </li>     
+                        {% endif %}
+            
+            
+                        {% for i in persons.paginator.page_range %}
+                            {% if persons.number == i %}
+                            <li class="mr-1">
+                                <a class="block bg-[#059D91] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l">{{ i }}</a>
+                            </li>
+                            {% else %}
+                            <li class="mr-1">
+                                <a href="?page={{ i }}" class="block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l">{{ i }}</a>
+                            </li>  
+                            {% endif %}
+                        {% endfor %}
+            
+            
+                        {% if persons.has_next %}  
+                        <li class="mr-1">
+                            <a href="?page={{ persons.next_page_number }}" class="block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-r">&raquo;</a>
+                        </li>
+                        {% else %}
+                        <li class="mr-1">
+                            <a class="block bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-r" href="?page={{ persons.paginator.num_pages }}">&raquo;</a>
+                        </li>     
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    
+   {% block content  %}
+   {% endblock %}
+       
+        </div>
+    </div>
+
+<script src="{% static 'js/update.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>  
+<!-- <script src="{% static 'js/edit.js' %}"></script> -->
+
+</body>
+</html>
